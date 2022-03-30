@@ -1,6 +1,6 @@
 <template>
   <!-- 主页面头部 -->
-  <div class="mm-header">
+  <header class="mm-header">
     <h1 class="header">
       <a href="https://github.com/maomao1996/Vue-mmPlayer" target="_blank">
         cloudmusic 在线音乐播放器
@@ -12,6 +12,7 @@
           <img class="avatar" src="assets/logo.png" alt="" />
           <span>晨</span>
         </router-link>
+        <dd class="user-btn" @click="openDialog(2)"></dd>
       </template>
       <dd v-else class="user-btn" @click="openDialog(0)">登录/login</dd>
     </dl>
@@ -19,15 +20,17 @@
     <mm-dialog
       ref="loginDialog"
       head-text="登录"
-      confirm-btn-text="登录"
+      confirm-btn-text="開始登录"
       cancel-btn-text="关闭"
       @confirm="login"
     >
       <div class="mm-dialog-text">
         <input
+          v-model.trim="uidValue"
           type="number"
           class="mm-dialog-input"
           placeholder="请输入您的网易云UID"
+          @keyup.enter="login"
         />
         <div slot="btn" @click="openDialog(1)">帮助</div>
       </div>
@@ -50,12 +53,13 @@
       body-text="确定退出当前用户吗？"
       @confirm="out"
     />
-  </div>
+  </header>
 </template>
 <script>
 import MmDialog from 'base/mm-dialog/mm-dialog'
 
 export default {
+  name: 'Mmheader',
   components: { MmDialog },
   data() {
     return {
@@ -68,13 +72,41 @@ export default {
     openDialog(key) {
       switch (key) {
         case 0:
+          // console.log('点击打开对话框')
           this.$refs.loginDialog.show()
           break
+        case 1:
+          this.$refs.helpDialog.show()
+          break
+        case 2:
+          this.$outDialog.show()
+          break
+        case 3:
+          this.$refs.loginDialog.hide()
+          break
       }
+    },
+    // 点击操作
+    // 登录
+    login() {
+      console.log('hello user')
+      if (this.uidValue === '') {
+        alert('uid不能为空！')
+        return
+      }
+      this.openDialog(3) // 登录成功退出登录页面
+      console.log('hello new people')
+      // 资源请求需要继续做的位置！！！！！
+    },
+    out() {
+      this.user = {}
+      this.setUid(null)
+      alert('退出成功')
     }
   }
 }
 </script>
+
 <style lang="less">
 .mm-header {
   position: absolute;
@@ -121,6 +153,10 @@ export default {
   background: transparent;
   color: yellow;
   font-size: 14px;
+  outline: 0;
+  &::placeholder {
+    color: @text_color;
+  }
 }
 .text {
   position: relative;

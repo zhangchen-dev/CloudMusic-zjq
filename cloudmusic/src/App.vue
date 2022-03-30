@@ -4,7 +4,7 @@
     <mm-header />
     <router-view class="router-view" />
     <!-- 更新说明 -->
-    <!-- <mm-dialog id="后续再写" /> -->
+    <mm-dialog ref="versionInfo" type="alert" head-text="更新提示" />
     <!-- 播放器 -->
     <audio ref="mmPlayer">hello 我是播放器</audio>
   </div>
@@ -12,11 +12,21 @@
 
 <script>
 import MmHeader from 'components/mm-header/mm-header'
-
+import MmDialog from 'base/mm-dialog/mm-dialog'
 export default {
   name: 'App',
   components: {
-    MmHeader
+    MmHeader,
+    MmDialog
+  },
+  mounted() {
+    this.version()
+  },
+  methods: {
+    version() {
+      console.log(this.$refs.versionInfo) // ?? 此处为何直接不显示这个组件
+      this.$refs.versionInfo.show()
+    }
   }
 }
 </script>

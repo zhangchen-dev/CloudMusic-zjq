@@ -2,24 +2,49 @@
 <template>
   <div class="music">
     <div class="music-content">
-      <div class="left">
+      <div class="music-left">
         <music-btn />
+        <keep-alive>
+          <router-view v-if="$route.meta.keepAlive" class="music-list" />
+        </keep-alive>
       </div>
-      <div class="right">right</div>
+      <router-view
+        v-if="!$route.meta.keepAlive"
+        class="music-list"
+        :key="$route.path"
+      />
+      <div class="music-right" :class="{ show: lyricVisible }">
+        <div class="close-lyric" @click="handleCloseLyric">关闭歌单词</div>
+        <lyric ref="lyric">我是要关闭的歌词</lyric>
+      </div>
     </div>
+    <!-- 播放器 -->
     <div class="music-bar">
       <!-- 播放按键等 -->
+      播放按键等
     </div>
   </div>
-  <!-- 播放器 -->
 </template>
 <script>
 import MusicBtn from 'components/music-btn/music-btn'
+import Lyric from 'components/lyric/lyric.vue'
 export default {
   name: 'Music',
-  components: { MusicBtn }
+  components: { MusicBtn, Lyric },
+  data() {
+    return {
+      lyricVisible: true
+    }
+  },
+  methods: {
+    handleCloseLyric() {
+      // 关闭歌词
+      this.lyricVisible = false
+    }
+  }
 }
 </script>
+
 <style lang="less">
 .music {
   padding: 75px 25px 25px 25px;
@@ -34,14 +59,15 @@ export default {
     display: flex;
     width: 100%;
     height: 100%;
-    .left {
+    .music-left {
       flex: 1;
       height: 100%;
       width: 100%;
       overflow: hidden;
       background-color: blue;
     }
-    .right {
+    .music-right {
+      display: none;
       position: relative;
       // display: none;
       width: 310px;
@@ -56,6 +82,9 @@ export default {
       height: 80px;
       box-sizing: border-box;
       color: #245;
+    }
+    .show {
+      display: block;
     }
   }
 }

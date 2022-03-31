@@ -13,8 +13,9 @@ export default {
 .music-btn {
   width: 100%;
   height: 60px;
-  font-size: 0;
+  font-size: 17px;
   white-space: nowrap;
   overflow-x: auto;
+  background-color: pink;
 }
 </style>

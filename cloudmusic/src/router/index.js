@@ -9,13 +9,25 @@ const routes = [
   },
   {
     path: '/music',
-    component: () => import('pages/music')
-    // children: [
-    //   {
-    //     path: '/music/userlist',
-    //     component: () => import('pages/userList/userList')
-    //   }
-    // ]
+    component: () => import('pages/music'),
+    redirect: './music/playlist',
+    children: [
+      {
+        path: '/music/playlist', // 正在播放的列表
+        component: () => import('pages/playList/playList'),
+        meta: {
+          keepAlive: true
+        }
+      },
+      {
+        path: '/music/userlist', // 我的歌单
+        component: () => import('pages/userList/userList'),
+        meta: {
+          title: '我的歌单',
+          keepAlive: true
+        }
+      }
+    ]
   }
   // {
   //   path: '/music/playlist',

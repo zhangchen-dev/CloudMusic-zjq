@@ -2,14 +2,22 @@
 <template>
   <div class="music">
     <div class="music-content">
-      <div class="left">left</div>
+      <div class="left">
+        <music-btn />
+      </div>
       <div class="right">right</div>
     </div>
+    <div class="music-bar">
+      <!-- 播放按键等 -->
+    </div>
   </div>
+  <!-- 播放器 -->
 </template>
 <script>
+import MusicBtn from 'components/music-btn/music-btn'
 export default {
-  name: 'Music'
+  name: 'Music',
+  components: { MusicBtn }
 }
 </script>
 <style lang="less">
@@ -40,6 +48,14 @@ export default {
       height: 100%;
       margin-left: 10px;
       background-color: red;
+    }
+    .music-bar {
+      display: flex;
+      align-content: center;
+      width: 100%;
+      height: 80px;
+      box-sizing: border-box;
+      color: #245;
     }
   }
 }

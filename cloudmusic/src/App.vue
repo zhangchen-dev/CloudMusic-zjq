@@ -13,11 +13,18 @@
 <script>
 import MmHeader from 'components/mm-header/mm-header'
 import MmDialog from 'base/mm-dialog/mm-dialog'
+import { mapMutations } from 'vuex'
 export default {
   name: 'App',
   components: {
     MmHeader,
     MmDialog
+  },
+  created() {
+    // 设置播放audio元素
+    this.$nextTick(() => {
+      this.setAudioele(this.$refs.mmPlayer)
+    })
   },
   mounted() {
     this.version()
@@ -26,7 +33,10 @@ export default {
     version() {
       console.log(this.$refs.versionInfo) // ?? 此处为何直接不显示这个组件
       this.$refs.versionInfo.show()
-    }
+    },
+    ...mapMutations({
+      setAudioele: 'SET_AUDIOELE'
+    })
   }
 }
 </script>

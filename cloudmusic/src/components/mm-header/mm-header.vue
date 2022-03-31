@@ -57,6 +57,9 @@
 </template>
 <script>
 import MmDialog from 'base/mm-dialog/mm-dialog'
+import { getUserPlaylist } from 'api'
+import { mapActions } from 'vuex'
+import { toHttps } from '@/utils/util'
 
 export default {
   name: 'Mmheader',
@@ -67,7 +70,10 @@ export default {
       uidValue: '' // 记录用户UID
     }
   },
-  created() {},
+  created() {
+    // 如果帐户信息存在，请求用户数据
+    this.uid && this._getUserPlaylist(this.uid)
+  },
   methods: {
     openDialog(key) {
       switch (key) {
@@ -96,8 +102,33 @@ export default {
       }
       this.openDialog(3) // 登录成功退出登录页面
       console.log('hello new people')
-      // 资源请求需要继续做的位置！！！！！
+      // 资源请求
+      this._getUserPlaylist(this.uidValue)
     },
+    // 依据输入的帐户获取用户数据
+    _getUserPlaylist(uid) {
+      // console.log(getUserPlaylist(uid))
+      getUserPlaylist(uid).then(({ playlist = [] }) => {
+        // 箭头函数的这种用法怎么回事？？？？
+        this.uidValue = ''
+        console.log(playlist)
+        if (playlist.length === 0 || !playlist[0].creator) {
+          // 为查询到此用户
+          alert(`没有查询到${uid}的数据`)
+          return
+        }
+        const creator = playlist[0].creator
+        // 提交全局状态uid为当前登录进的
+        this.setUid(uid)
+        // 这一步作用？将http链接转换为https链接
+        creator.avatarUrl = toHttps(creator.avatarUrl)
+        this.user = creator
+        setTimeout(() => {
+          console.log(`${this.user.nickname}欢迎使用`)
+        }, 200)
+      })
+    },
+    ...mapActions(['setUid']),
     out() {
       this.user = {}
       this.setUid(null)

@@ -22,7 +22,11 @@
     <div class="music-bar">
       <!-- 播放按键等 -->
       播放按键等
+      <div class="music-bar-btns"></div>
     </div>
+    <!-- 遮罩 -->
+    <div class="mmPlayer-bg" :style="{ backgroundImage: picUrl }"></div>
+    <div class="mmPlayer-mask"></div>
   </div>
 </template>
 <script>
@@ -34,6 +38,12 @@ export default {
   data() {
     return {
       lyricVisible: true
+    }
+  },
+  computed: {
+    picUrl() {
+      // 返回当前歌曲的封面图片
+      return null
     }
   },
   methods: {
@@ -86,6 +96,21 @@ export default {
     .show {
       display: block;
     }
+  }
+  .mmPlayer-mask,
+  .mmPlayer-bg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+  }
+  .mmPlayer-mask {
+    z-index: -1;
+    background-color: @mask_color;
+  }
+  .mmPlayer-bg {
+    z-index: -2;
   }
 }
 </style>

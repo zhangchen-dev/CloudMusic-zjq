@@ -3,7 +3,8 @@
   <div class="music">
     <div class="music-content">
       <div class="music-left">
-        <music-btn />
+        <!-- 按键关于是否打开歌词 -->
+        <music-btn @onClickLyric="handleOpenLyric" />
         <keep-alive>
           <router-view v-if="$route.meta.keepAlive" class="music-list" />
         </keep-alive>
@@ -47,15 +48,19 @@ export default {
     }
   },
   methods: {
+    // 关闭歌词
     handleCloseLyric() {
-      // 关闭歌词
       this.lyricVisible = false
+    },
+    // 打开歌词
+    handleOpenLyric() {
+      this.lyricVisible = true
     }
   }
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .music {
   padding: 75px 25px 25px 25px;
   width: 100%;

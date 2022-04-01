@@ -9,10 +9,10 @@
     <dl class="user">
       <template v-if="user.userId">
         <router-link class="user-info" to="/music/userlist" tag="dt">
-          <img class="avatar" src="assets/logo.png" alt="" />
-          <span>晨</span>
+          <img class="avatar" :src="`${user.avatarUrl}?50y50`" alt="" />
+          <span>{{ user.nickname }}</span>
         </router-link>
-        <dd class="user-btn" @click="openDialog(2)"></dd>
+        <dd class="user-btn" @click="openDialog(2)">退出</dd>
       </template>
       <dd v-else class="user-btn" @click="openDialog(0)">登录/login</dd>
     </dl>
@@ -85,7 +85,7 @@ export default {
           this.$refs.helpDialog.show()
           break
         case 2:
-          this.$outDialog.show()
+          this.$refs.outDialog.show()
           break
         case 3:
           this.$refs.loginDialog.hide()
@@ -111,7 +111,6 @@ export default {
       getUserPlaylist(uid).then(({ playlist = [] }) => {
         // 箭头函数的这种用法怎么回事？？？？
         this.uidValue = ''
-        console.log(playlist)
         if (playlist.length === 0 || !playlist[0].creator) {
           // 为查询到此用户
           alert(`没有查询到${uid}的数据`)
@@ -145,7 +144,6 @@ export default {
   left: 0;
   width: 100%;
   height: 60px;
-  // ???
   @media (max-width: 768px) {
     background: @header_bg_color;
   }
@@ -166,12 +164,35 @@ export default {
     line-height: 30px;
     text-align: right;
     transform: translateY(-50%);
-    background-color: #ccc;
-    .avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 5px;
-      vertical-align: middle;
+    &-info {
+      float: left;
+      margin-right: 15px;
+      cursor: pointer; // 这个css属性的作用
+      .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 90px;
+        vertical-align: middle;
+      }
+      span {
+        margin-left: 100px;
+        color: @text_color_active;
+      }
+    }
+    &-btn {
+      float: left;
+      cursor: pointer;
+      &:hover {
+        color: @text_color_active;
+      }
+    }
+    @media (max-width: 768px) {
+      &-info {
+        margin-right: 10px;
+        span {
+          display: none;
+        }
+      }
     }
   }
 }

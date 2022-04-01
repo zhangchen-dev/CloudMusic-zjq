@@ -25,6 +25,11 @@ export default {
     this.$nextTick(() => {
       this.setAudioele(this.$refs.mmPlayer)
     })
+    // 获取正在播放的列表 2022.4.1☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
+    // getPlaylistDetail(defaultSheetId).then((playlist) => {
+    //   const list = playlist.tracks.slice(0, 100)
+    //   this.setPlaylist({ list })
+    // })
   },
   mounted() {
     this.version()
@@ -41,7 +46,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 #app {
   position: relative;
   display: block;

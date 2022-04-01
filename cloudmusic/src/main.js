@@ -5,6 +5,8 @@ import router from './router'
 import fastclick from 'fastclick'
 import VueLazyload from 'vue-lazyload'
 
+import '@/styles/index.less'
+
 // 优化移动端点击延迟情况
 fastclick.attach(document.body)
 

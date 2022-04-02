@@ -14,6 +14,8 @@
 import MmHeader from 'components/mm-header/mm-header'
 import MmDialog from 'base/mm-dialog/mm-dialog'
 import { mapMutations } from 'vuex'
+import { getPlaylistDetail } from 'api'
+import { defaultSheetId } from '@/config'
 export default {
   name: 'App',
   components: {
@@ -26,10 +28,10 @@ export default {
       this.setAudioele(this.$refs.mmPlayer)
     })
     // 获取正在播放的列表 2022.4.1☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆
-    // getPlaylistDetail(defaultSheetId).then((playlist) => {
-    //   const list = playlist.tracks.slice(0, 100)
-    //   this.setPlaylist({ list })
-    // })
+    getPlaylistDetail(defaultSheetId).then((playlist) => {
+      const list = playlist.tracks.slice(0, 100)
+      this.setPlaylist({ list })
+    })
   },
   mounted() {
     this.version()

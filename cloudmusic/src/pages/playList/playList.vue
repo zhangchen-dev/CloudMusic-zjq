@@ -36,9 +36,42 @@ export default {
     clearList() {
       // this.clearPlayList()
       console.log('清空播放列表方法，并且提交这个数据到全局状态中进行管理')
+    },
+    // 播放暂停键
+    selectItem(item, index) {
+      if (item.id !== this.currentMusic.id) {
+        this.setCurrentIndex(index)
+        this.setPlaying(true)
+      }
+    },
+    deleteItem(index) {
+      console.log('123')
     }
   }
 }
 </script>
-<style>
+<style lang="less">
+.playList {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  .musicList {
+    width: 100%;
+    height: 100%;
+    .list-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 50px;
+      span {
+        padding: 5px 20px;
+        cursor: pointer;
+        user-select: none;
+        &:hover {
+          color: @text_color_active;
+        }
+      }
+    }
+  }
+}
 </style>

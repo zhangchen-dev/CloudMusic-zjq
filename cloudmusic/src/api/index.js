@@ -21,6 +21,7 @@ export function getPlaylistDetail(id) {
       })
       .then(({ playlist }) => playlist || {})
       .then(playlist => {
+        console.log(playlist);
         const { trackIds, tracks } = playlist // 这一步用法的具体含义？？？已解决！
         if (!Array.isArray(trackIds)) {
           reject(new Error('获取歌单详情失败'))
@@ -28,8 +29,9 @@ export function getPlaylistDetail(id) {
         }
         // 过滤歌单 如排行榜 此处疑问，为何这样比较，他两赋值不是同一个参数吗，长度一定相同，为何还要判断？？？已解决！
         if (tracks.length === trackIds.length) {
-          // 数据格式化
+          // 数据格式化，获得每首歌曲的实例后的数据组成的数组
           playlist.tracks = formatTopSongs(playlist.tracks)
+          resolve(playlist)
         }
       })
   })

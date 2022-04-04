@@ -13,7 +13,7 @@
 <script>
 import MmHeader from 'components/mm-header/mm-header'
 import MmDialog from 'base/mm-dialog/mm-dialog'
-import { mapMutations } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 import { getPlaylistDetail } from 'api'
 import { defaultSheetId } from '@/config'
 export default {
@@ -43,7 +43,8 @@ export default {
     },
     ...mapMutations({
       setAudioele: 'SET_AUDIOELE'
-    })
+    }),
+    ...mapActions(['setPlaylist'])
   }
 }
 </script>

@@ -1,22 +1,42 @@
 <template>
   <div class="playList">
     <!-- 当前的播放列表 -->
-    <music-list :list="playlist">
-      <div>123</div>
+    <music-list
+      :list="playlist"
+      :list-type="1"
+      @select="selectItem"
+      @del="deleteItem"
+    >
+      <div slot="listBtn" class="list-btn">
+        <span @click="$refs.dialog.show()">清空列表</span>
+      </div>
     </music-list>
+    <mm-dialog
+      ref="dialog"
+      body-text="是否清空正在播放的列表"
+      confirm-btn-text="清空"
+      @confirm="clearList"
+    />
   </div>
 </template>
 <script>
-import musicList from 'components/music-list/music-list.vue'
+import MusicList from 'components/music-list/music-list.vue'
+import MmDialog from 'base/mm-dialog/mm-dialog.vue'
 import { mapGetters } from 'vuex'
 export default {
-  components: { musicList },
   name: 'PlayList',
+  components: { MusicList, MmDialog },
   data() {
     return {}
   },
   computed: {
     ...mapGetters(['playlist'])
+  },
+  methods: {
+    clearList() {
+      // this.clearPlayList()
+      console.log('清空播放列表方法，并且提交这个数据到全局状态中进行管理')
+    }
   }
 }
 </script>

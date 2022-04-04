@@ -8,6 +8,10 @@ const mutations = {
   // 修改网易云用户UID
   [types.SET_UID](state, uid) {
     state.uid = uid
+  },
+  // 修改播放列表
+  [types.SET_PLAYLIST](state, playList) {
+    state.playList = playList
   }
 }
 export default mutations

@@ -33,19 +33,27 @@
 <script>
 import MusicBtn from 'components/music-btn/music-btn'
 import Lyric from 'components/lyric/lyric.vue'
+import { defaultBG } from '@/config'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Music',
   components: { MusicBtn, Lyric },
   data() {
     return {
-      lyricVisible: true
+      lyricVisible: false // 移动端歌词显示
     }
   },
   computed: {
     picUrl() {
       // 返回当前歌曲的封面图片
-      return null
-    }
+      let a =
+        this.currentMusic.id && this.currentMusic.image
+          ? `url(${this.currentMusic.image}?param=300y300)`
+          : `url(${defaultBG})`
+      console.log(a)
+      return a
+    },
+    ...mapGetters(['currentMusic'])
   },
   methods: {
     // 关闭歌词
@@ -68,7 +76,6 @@ export default {
   margin: 0 auto;
   height: 100%;
   box-sizing: border-box;
-  background-color: skyblue;
   // overflow: hidden;
   .music-content {
     display: flex;
@@ -79,7 +86,6 @@ export default {
       height: 100%;
       width: 100%;
       overflow: hidden;
-      background-color: blue;
     }
     .music-right {
       display: none;
@@ -88,7 +94,6 @@ export default {
       width: 310px;
       height: 100%;
       margin-left: 10px;
-      background-color: red;
     }
     .music-bar {
       display: flex;
@@ -96,7 +101,7 @@ export default {
       width: 100%;
       height: 80px;
       box-sizing: border-box;
-      color: #245;
+      color: #fff;
     }
     .show {
       display: block;
@@ -116,6 +121,13 @@ export default {
   }
   .mmPlayer-bg {
     z-index: -2;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50%;
+    filter: blur(12px);
+    opacity: 0.7;
+    transition: all 0.8s;
+    transform: scale(1.1);
   }
 }
 </style>

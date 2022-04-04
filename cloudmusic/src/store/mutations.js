@@ -10,8 +10,8 @@ const mutations = {
     state.uid = uid
   },
   // 修改播放列表
-  [types.SET_PLAYLIST](state, playList) {
-    state.playList = playList
+  [types.SET_PLAYLIST](state, playlist) {
+    state.playlist = playlist
   }
 }
 export default mutations

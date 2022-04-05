@@ -1,5 +1,5 @@
+<!-- icon 组件 -->
 <script>
-//  icon组件
 export default {
   name: 'MmIcon',
   props: {
@@ -13,21 +13,21 @@ export default {
     }
   },
   methods: {
-    onClick(e) {
-      this.$emit('click', e)
-    },
     getIconCls() {
-      return { fontSize: this.size + 'px' }
+      return `icon-${this.type}`
     },
     getIconStyle() {
-      return `icon-${this.type}`
+      return { fontSize: this.size + 'px' }
+    },
+    onClick(e) {
+      this.$emit('click', e)
     }
   },
   render() {
     const Icon = (
       <i
         onClick={this.onClick}
-        class={`iconfont${this.getIconCls()}`}
+        class={`iconfont ${this.getIconCls()}`}
         style={this.getIconStyle()}
       />
     )
@@ -35,7 +35,8 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
+
+<style lang="less">
 .iconfont {
   display: inline-block;
   font-style: normal;

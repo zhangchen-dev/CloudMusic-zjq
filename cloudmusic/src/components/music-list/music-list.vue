@@ -31,7 +31,8 @@
           </div>
           <span class="list-artist">{{ item.singer }}</span>
           <span v-if="listType === 1" class="list-time">
-            {{ item.duration % 3600 | format }}
+            歌曲时长
+            <!-- {{ item.duration % 3600 | format }} -->
             <mm-icon
               class="hover list-menu-icon-del"
               type="delete-mini"
@@ -47,6 +48,7 @@
     <div v-else>title="弄啥嘞，怎么啥也没有！！！"</div>
   </div>
 </template>
+
 <script>
 import MmIcon from 'base/mm-icon/mm-icon.vue'
 import { mapGetters, mapMutations } from 'vuex'

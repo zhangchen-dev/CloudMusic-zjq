@@ -22,7 +22,7 @@
 <script>
 import MusicList from 'components/music-list/music-list.vue'
 import MmDialog from 'base/mm-dialog/mm-dialog.vue'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'PlayList',
   components: { MusicList, MmDialog },
@@ -30,7 +30,7 @@ export default {
     return {}
   },
   computed: {
-    ...mapGetters(['playlist', 'currentMusic'])
+    ...mapGetters(['playlist', 'currentMusic', 'playing'])
   },
   methods: {
     ...mapMutations({
@@ -49,9 +49,15 @@ export default {
         this.setPlaying(true)
       }
     },
+
+    // 删除事件
     deleteItem(index) {
-      console.log('123')
-    }
+      let list = [...this.playing]
+      list.splice(index, 1)
+      this.removerPlayListItem({ list, index })
+      console.log('歌曲删除成功！')
+    },
+    ...mapActions(['removerPlayListItem'])
   }
 }
 </script>

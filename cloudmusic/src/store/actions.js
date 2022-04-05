@@ -11,3 +11,19 @@ export const setUid = function ({ commit }, uid) {
 export const setPlaylist = function ({ commit }, { list }) {
   commit(types.SET_PLAYLIST, list)
 }
+
+// 删除正在播放列表中的歌曲
+export const removerPlayListItem = function ({ commit, state }, { list, index }) {
+  let currentIndex = state.currentIndex
+  if (index < state.currentIndex || list.length === state.currentIndex) {
+    currentIndex-- // 删除的歌曲位置处于当前播放列表中的下方位置处
+    commit(types.SET_CURRENTINDEX, currentIndex)
+  }
+  commit(types.SET_PLAYLIST, list)
+  commit(types.SET_ORDERLIST, list)
+  if (!list.length) {
+    commit(types.SET_PLAYING, false)
+  } else {
+    commit(types.SET_PLAYING, true)
+  }
+}

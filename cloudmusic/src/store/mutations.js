@@ -20,6 +20,10 @@ const mutations = {
   // 修改当前音乐索引
   [types.SET_CURRENTINDEX](state, currentIndex) {
     state.currentIndex = currentIndex
+  },
+  // 修改顺序列表
+  [types.SET_ORDERLIST](state, orderList) {
+    state.orderList = orderList
   }
 }
 export default mutations

@@ -31,8 +31,7 @@
           </div>
           <span class="list-artist">{{ item.singer }}</span>
           <span v-if="listType === 1" class="list-time">
-            歌曲时长
-            <!-- {{ item.duration % 3600 | format }} -->
+            {{ item.duration % 3600 | format }}
             <mm-icon
               class="hover list-menu-icon-del"
               type="delete-mini"
@@ -50,12 +49,11 @@
 </template>
 
 <script>
-import MmIcon from 'base/mm-icon/mm-icon.vue'
 import { mapGetters, mapMutations } from 'vuex'
 import { format } from '@/utils/util'
+
 export default {
   name: 'MusicList',
-  components: { MmIcon },
   filters: {
     // vue中的过滤器的使用
     format
@@ -130,7 +128,7 @@ export default {
     })
   }
 }
-</script >
+</script>
 <style lang="less" scoped>
 .list-header {
   border-bottom: 1px solid @list_head_line_color;

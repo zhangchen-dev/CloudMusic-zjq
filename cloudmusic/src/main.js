@@ -4,6 +4,7 @@ import store from './store'
 import router from './router'
 import fastclick from 'fastclick'
 import VueLazyload from 'vue-lazyload'
+import Icon from 'base/mm-icon/mm-icon'
 
 import '@/styles/index.less'
 
@@ -14,7 +15,7 @@ fastclick.attach(document.body)
 // Vue.use(mmToast)
 
 // icon组件？？
-// Vue.component(Icon.name, Icon)
+Vue.component(Icon.name, Icon)
 
 // 懒加载
 Vue.use(VueLazyload, {

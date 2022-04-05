@@ -30,7 +30,15 @@
             </div>
           </div>
           <span class="list-artist">{{ item.singer }}</span>
-          <span v-if="listType === 1" class="list-time"></span>
+          <span v-if="listType === 1" class="list-time">
+            {{ item.duration % 3600 | format }}
+            <mm-icon
+              class="hover list-menu-icon-del"
+              type="delete-mini"
+              :size="40"
+              @click.stop="deleteItem(index)"
+            />
+          </span>
           <span v-else class="list-album">{{ item.album }}</span>
         </div>
         <slot name="listBtn"></slot>
@@ -41,12 +49,22 @@
 </template>
 <script>
 import MmIcon from 'base/mm-icon/mm-icon.vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
+import { format } from '@/utils/util'
 export default {
   name: 'MusicList',
   components: { MmIcon },
+  filters: {
+    // vue中的过滤器的使用
+    format
+  },
   data() {
-    return {}
+    return {
+      lockUp: true // 是否锁定滚动加载事件，默认锁定
+    }
+  },
+  computed: {
+    ...mapGetters(['playing', 'currentMusic'])
   },
   props: {
     // 歌曲数据
@@ -66,26 +84,48 @@ export default {
   methods: {
     // 获取播放状态type
     getPlayIconType({ id: itemId }) {
+      console.log(itemId)
       const {
         playing,
         currentMusic: { id }
       } = this
+      console.log(id)
       return playing && id === itemId ? 'pause-mini' : 'play-mini'
     },
     // 播放暂停键
     selectItem(item, index, e) {
-      if (e && /list-menu-icon-del/.text(e.target.className)) {
+      console.log(item)
+      if (e && /list-menu-icon-del/.test(e.target.className)) {
         return
       }
       if (this.currentMusic.id && item.id === this.currentMusic.id) {
+        // 针对播放的当前状态，双击后出现相反的状态，也即播放和暂停
         this.setPlaying(!this.playing)
         return
       }
-      this.$emit('select', item, index) // 出发点击播放事件
-    }
-  },
-  computed: {
-    ...mapGetters(['playing', 'currentMusic'])
+      this.$emit('select', item, index) // 触发点击播放事件
+    },
+    // 删除事件
+    deleteItem(index) {
+      this.$emit('del', index) // 触发删除事件
+    },
+    // 滚动事件
+    listScroll(e) {
+      // 滚动事件
+      const scrollTop = e.target.scrollTop
+      this.scrollTop = scrollTop
+      if (this.listType !== 2 || this.lockUp) {
+        return
+      }
+      const { scrollHeight, offsetHeight } = e.target
+      if (scrollTop + offsetHeight >= scrollHeight - 50) {
+        this.lockUp = true // 锁定滚动加载，锁定滚动加载的意思就是要使用滚动加载方式
+        this.$emit('pullUp') // 触发滚动加载事件
+      }
+    },
+    ...mapMutations({
+      setPlaying: 'SET_PLAYING'
+    })
   }
 }
 </script >

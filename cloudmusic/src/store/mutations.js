@@ -12,6 +12,14 @@ const mutations = {
   // 修改播放列表
   [types.SET_PLAYLIST](state, playlist) {
     state.playlist = playlist
+  },
+  // 修改播放状态
+  [types.SET_PLAYING](state, playing) {
+    state.playing = playing
+  },
+  // 修改当前音乐索引
+  [types.SET_CURRENTINDEX](state, currentIndex) {
+    state.currentIndex = currentIndex
   }
 }
 export default mutations

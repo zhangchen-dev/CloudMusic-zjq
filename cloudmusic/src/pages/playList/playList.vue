@@ -22,7 +22,7 @@
 <script>
 import MusicList from 'components/music-list/music-list.vue'
 import MmDialog from 'base/mm-dialog/mm-dialog.vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'PlayList',
   components: { MusicList, MmDialog },
@@ -30,15 +30,20 @@ export default {
     return {}
   },
   computed: {
-    ...mapGetters(['playlist'])
+    ...mapGetters(['playlist', 'currentMusic'])
   },
   methods: {
+    ...mapMutations({
+      setPlaying: 'SET_PLAYING',
+      setCurrentIndex: 'SET_CURRENTINDEX'
+    }),
     clearList() {
       // this.clearPlayList()
       console.log('清空播放列表方法，并且提交这个数据到全局状态中进行管理')
     },
     // 播放暂停键
     selectItem(item, index) {
+      console.log(item)
       if (item.id !== this.currentMusic.id) {
         this.setCurrentIndex(index)
         this.setPlaying(true)

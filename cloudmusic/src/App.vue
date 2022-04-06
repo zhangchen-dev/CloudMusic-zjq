@@ -16,6 +16,7 @@ import MmDialog from 'base/mm-dialog/mm-dialog'
 import { mapActions, mapMutations } from 'vuex'
 import { getPlaylistDetail } from 'api'
 import { defaultSheetId } from '@/config'
+import { createTopList } from '@/utils/song'
 export default {
   name: 'App',
   components: {
@@ -37,6 +38,17 @@ export default {
     this.version()
   },
   methods: {
+    // 歌曲数据处理，这一步是怎么调用的，它存在的意义又是啥？？？？
+    _formatSongs(list) {
+      let ret = []
+      list.forEach((item) => {
+        const musicData = item
+        if (musicData.id) {
+          ret.push(createTopList(musicData))
+        }
+      })
+      return ret
+    },
     version() {
       console.log(this.$refs.versionInfo) // ?? 此处为何直接不显示这个组件
       this.$refs.versionInfo.show()

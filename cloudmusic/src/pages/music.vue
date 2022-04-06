@@ -50,7 +50,6 @@ export default {
         this.currentMusic.id && this.currentMusic.image
           ? `url(${this.currentMusic.image}?param=300y300)`
           : `url(${defaultBG})`
-      console.log(a)
       return a
     },
     ...mapGetters(['currentMusic'])

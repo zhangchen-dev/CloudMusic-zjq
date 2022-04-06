@@ -84,17 +84,14 @@ export default {
   methods: {
     // 获取播放状态type
     getPlayIconType({ id: itemId }) {
-      console.log(itemId)
       const {
         playing,
         currentMusic: { id }
       } = this
-      console.log(id)
       return playing && id === itemId ? 'pause-mini' : 'play-mini'
     },
     // 播放暂停键
     selectItem(item, index, e) {
-      console.log(item)
       if (e && /list-menu-icon-del/.test(e.target.className)) {
         return
       }

@@ -52,7 +52,7 @@ export default {
 
     // 删除事件
     deleteItem(index) {
-      let list = [...this.playing]
+      let list = [...this.playlist]
       list.splice(index, 1)
       this.removerPlayListItem({ list, index })
       console.log('歌曲删除成功！')

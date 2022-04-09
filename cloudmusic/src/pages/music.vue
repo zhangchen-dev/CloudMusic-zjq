@@ -21,9 +21,44 @@
     </div>
     <!-- 播放器 -->
     <div class="music-bar">
-      <!-- 播放按键等 -->
-      播放按键等
-      <div class="music-bar-btns"></div>
+      <div class="music-bar-btns">
+        <!-- 播放按键等 -->
+        <mm-icon
+          class="pointer"
+          type="prev"
+          :size="36"
+          title="上一曲 Ctrl+Left"
+        />
+        <div
+          class="control-play pointer"
+          title="播放暂停 Ctrl+Space"
+          @click="play"
+        >
+          <mm-icon :type="playing ? 'pause' : 'playing'" :size="24" />
+        </div>
+        <mm-icon
+          class="pointer"
+          type="next"
+          :size="36"
+          title="下一曲 Ctrl+Right"
+          @click="next"
+        />
+      </div>
+      <!-- 播放条等信息 -->
+      <div class="music-music">
+        <div class="music-bar-info">
+          <template v-if="currentMusic && currentMusic.id">
+            {{ currentMusic.name }}
+            <span>-{{ currentMusic.singer }}</span>
+          </template>
+          <template v-else>欢迎使用zjqMusicCloud在线音乐播放器</template>
+        </div>
+        <div class="music-bar-time" v-if="currentMusic.id">
+          {{ currentTime | format }}/{{ currentMusic.duration % 3600 | format }}
+        </div>
+      </div>
+      <!-- 进度条调节功能 -->
+      <!-- 播放模式 -->
     </div>
     <!-- 遮罩 -->
     <div class="mmPlayer-bg" :style="{ backgroundImage: picUrl }"></div>
@@ -40,7 +75,8 @@ export default {
   components: { MusicBtn, Lyric },
   data() {
     return {
-      lyricVisible: false // 移动端歌词显示
+      lyricVisible: false, // 移动端歌词显示
+      currentTime: 0 // 当前播放音乐时间
     }
   },
   computed: {

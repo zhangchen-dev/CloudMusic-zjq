@@ -30,7 +30,7 @@ export function createTopList(music) {
     singer: music.ar.length > 0 && filterSinger(music.ar),
     album: music.al.name,
     image: toHttps(music.al.picUrl) || null,
-    duration: music.dt / 1000, // 这个属性的作用 歌曲时长
+    duration: music.dt / 1000, // 这个属性的作用??? 歌曲时长
     url: `https://music.163.com/song/media/outer/url?id=${music.id}.mp3`
   })
 }

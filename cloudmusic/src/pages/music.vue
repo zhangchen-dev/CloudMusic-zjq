@@ -29,19 +29,14 @@
           :size="36"
           title="上一曲 Ctrl+Left"
         />
-        <div
-          class="control-play pointer"
-          title="播放暂停 Ctrl+Space"
-          @click="play"
-        >
-          <mm-icon :type="playing ? 'pause' : 'playing'" :size="24" />
+        <div class="control-play pointer" title="播放暂停 Ctrl+Space">
+          <!-- <mm-icon :type="playing ? 'pause' : 'playing'" :size="24" /> -->
         </div>
         <mm-icon
           class="pointer"
           type="next"
           :size="36"
           title="下一曲 Ctrl+Right"
-          @click="next"
         />
       </div>
       <!-- 播放条等信息 -->
@@ -58,6 +53,7 @@
         </div>
       </div>
       <!-- 进度条调节功能 -->
+      <mm-progress />
       <!-- 播放模式 -->
     </div>
     <!-- 遮罩 -->
@@ -67,12 +63,13 @@
 </template>
 <script>
 import MusicBtn from 'components/music-btn/music-btn'
-import Lyric from 'components/lyric/lyric.vue'
 import { defaultBG } from '@/config'
 import { mapGetters } from 'vuex'
+import MmProgress from 'base/mm-progress/mm-progress.vue'
+import Lyric from 'components/lyric/lyric'
 export default {
   name: 'Music',
-  components: { MusicBtn, Lyric },
+  components: { MusicBtn, MmProgress, Lyric },
   data() {
     return {
       lyricVisible: false, // 移动端歌词显示
@@ -103,7 +100,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .music {
   padding: 75px 25px 25px 25px;
   width: 100%;
@@ -111,37 +108,127 @@ export default {
   margin: 0 auto;
   height: 100%;
   box-sizing: border-box;
-  // overflow: hidden;
+  overflow: hidden;
   .music-content {
     display: flex;
     width: 100%;
-    height: 100%;
+    height: calc(~'100% - 80px');
     .music-left {
       flex: 1;
       height: 100%;
-      width: 100%;
       overflow: hidden;
+      .music-list {
+        height: calc(~'100% - 60px');
+      }
     }
     .music-right {
-      display: none;
       position: relative;
-      // display: none;
       width: 310px;
-      height: 100%;
       margin-left: 10px;
-    }
-    .music-bar {
-      display: flex;
-      align-content: center;
-      width: 100%;
-      height: 80px;
-      box-sizing: border-box;
-      color: #fff;
-    }
-    .show {
-      display: block;
+      .close-lyric {
+        position: absolute;
+        top: 0;
+        z-index: 1;
+        cursor: pointer;
+      }
     }
   }
+
+  /*底部mmPlayer-bar*/
+  .music-bar {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    box-sizing: border-box;
+    padding-bottom: 15px;
+    color: #fff;
+    &.disable {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    .icon-color {
+      color: #fff;
+    }
+    .music-bar-btns {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 180px;
+      .control-play {
+        .flex-center;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.3);
+        .icon-bofang101 {
+          transform: translateX(2px);
+        }
+      }
+    }
+
+    .flex-center;
+    .btn-prev {
+      width: 19px;
+      min-width: 19px;
+      height: 20px;
+      background-position: 0 -30px;
+    }
+    .btn-play {
+      width: 21px;
+      min-width: 21px;
+      height: 29px;
+      margin: 0 50px;
+      background-position: 0 0;
+      &.btn-play-pause {
+        background-position: -30px 0;
+      }
+    }
+    .btn-next {
+      width: 19px;
+      min-width: 19px;
+      height: 20px;
+      background-position: 0 -52px;
+    }
+    .music-music {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      box-sizing: border-box;
+      padding-left: 40px;
+      font-size: @font_size_small;
+      color: @text_color_active;
+      .music-bar-info {
+        height: 15px;
+        padding-right: 80px;
+        line-height: 15px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+      }
+      .music-bar-time {
+        position: absolute;
+        top: 0;
+        right: 5px;
+      }
+    }
+    .mode,
+    .comment,
+    .music-bar-volume {
+      margin-left: 20px;
+    }
+
+    // 音量控制
+    .volume-wrapper {
+      margin-left: 20px;
+      width: 150px;
+    }
+  }
+
+  /*遮罩*/
   .mmPlayer-mask,
   .mmPlayer-bg {
     position: absolute;
@@ -150,10 +237,12 @@ export default {
     left: 0;
     bottom: 0;
   }
+
   .mmPlayer-mask {
     z-index: -1;
     background-color: @mask_color;
   }
+
   .mmPlayer-bg {
     z-index: -2;
     background-repeat: no-repeat;
@@ -163,6 +252,73 @@ export default {
     opacity: 0.7;
     transition: all 0.8s;
     transform: scale(1.1);
+  }
+
+  @media (min-width: 960px) {
+    .close-lyric {
+      display: none;
+    }
+  }
+
+  //当屏幕小于960时
+  @media (max-width: 960px) {
+    .music-right {
+      display: none;
+      &.show {
+        display: block;
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+  }
+  //当屏幕小于768时
+  @media (max-width: 768px) {
+    & {
+      padding: 75px 15px 5px 15px;
+    }
+
+    .music-content .music-left {
+      .music-list {
+        font-size: @font_size_medium;
+      }
+    }
+
+    .music-bar {
+      .music-bar-info span,
+      .music-bar-volume .mmProgress {
+        display: none;
+      }
+    }
+  }
+  //当屏幕小于520时
+  @media (max-width: 520px) {
+    .music-bar {
+      position: relative;
+      flex-direction: column;
+      .music-bar-btns {
+        width: 60%;
+        margin-top: 15px;
+        order: 2;
+      }
+      .music-music {
+        padding-left: 0;
+        order: 1;
+      }
+      & > i.mode {
+        position: absolute;
+        top: 40px;
+        left: 5px;
+        margin: 0;
+      }
+      .comment {
+        position: absolute;
+        top: 40px;
+        right: 5px;
+      }
+      .music-bar-volume {
+        display: none;
+      }
+    }
   }
 }
 </style>

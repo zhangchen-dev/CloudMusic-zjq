@@ -28,7 +28,8 @@ export default {
   watch: {},
   mounted() {
     this.$nextTick(() => {
-      this.bindEvents()
+      this.bindEvents() // 添加绑定事件
+      const barWidth = this
     })
   },
   methods: {

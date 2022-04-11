@@ -19,6 +19,7 @@
         <lyric ref="lyric">我是要关闭的歌词</lyric>
       </div>
     </div>
+
     <!-- 播放器 -->
     <div class="music-bar">
       <div class="music-bar-btns">
@@ -28,15 +29,21 @@
           type="prev"
           :size="36"
           title="上一曲 Ctrl+Left"
+          @click="prev"
         />
-        <div class="control-play pointer" title="播放暂停 Ctrl+Space">
-          <!-- <mm-icon :type="playing ? 'pause' : 'playing'" :size="24" /> -->
+        <div
+          class="control-play pointer"
+          title="播放暂停 Ctrl+Space"
+          @click="play"
+        >
+          <mm-icon :type="playing ? 'pause' : 'playing'" :size="24" />
         </div>
         <mm-icon
           class="pointer"
           type="next"
           :size="36"
           title="下一曲 Ctrl+Right"
+          @click="next"
         />
       </div>
       <!-- 播放条等信息 -->
@@ -64,16 +71,18 @@
 <script>
 import MusicBtn from 'components/music-btn/music-btn'
 import { defaultBG } from '@/config'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import MmProgress from 'base/mm-progress/mm-progress.vue'
 import Lyric from 'components/lyric/lyric'
+
 export default {
   name: 'Music',
   components: { MusicBtn, MmProgress, Lyric },
   data() {
     return {
       lyricVisible: false, // 移动端歌词显示
-      currentTime: 0 // 当前播放音乐时间
+      currentTime: 0, // 当前播放音乐时间
+      musicReady: false // 是否可以使用播放器
     }
   },
   computed: {
@@ -85,7 +94,17 @@ export default {
           : `url(${defaultBG})`
       return a
     },
-    ...mapGetters(['currentMusic'])
+    ...mapGetters(['currentMusic', 'playing'])
+  },
+  watch: {
+    // 监听函数用法
+    playing(newPlaying) {
+      const audio = this.audioEle
+      this.$nextTick(() => {
+        // 监听收到新值的true/false
+        newPlaying ? silencePromise(audio.play()) : audio.pause()
+      })
+    }
   },
   methods: {
     // 关闭歌词
@@ -95,7 +114,52 @@ export default {
     // 打开歌词
     handleOpenLyric() {
       this.lyricVisible = true
-    }
+    },
+    // 播放上一曲
+    prev() {
+      console.log('播放上一曲')
+      if (!this.musicReady) {
+        return null
+      }
+      if (this.playlist.length === 1) {
+        // 只有一首歌就循环
+        this.loop()
+      } else {
+        let index = this.currentIndex - 1
+        if (index < 0) {
+          index = this.playlist.length - 1
+        }
+        this.setCurrentIndex(index)
+        if (!this.playing && this.musicReady) {
+          this.setPlaying(true)
+        }
+        this.musicReady = false
+      }
+    },
+    // 播放/暂停按钮
+    play() {
+      if (this.playing) {
+        console.log('暂停')
+      } else {
+        console.log('播放')
+      }
+    },
+    // 播放下一曲
+    next() {
+      console.log('播放下一曲')
+    },
+
+    // 播放模式
+    loop() {
+      console.log('循环播放模式')
+    },
+
+    // 提交状态的一些方法
+    ...mapMutations({
+      setPlaying: 'SET_PLAYING',
+      setPlaylist: 'SET_PLAYLIST',
+      setCurrentIndex: 'SET_CURRENTINDEX'
+    })
   }
 }
 </script>

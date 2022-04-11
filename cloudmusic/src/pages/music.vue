@@ -69,20 +69,28 @@
   </div>
 </template>
 <script>
+import { getLyric } from 'api'
 import MusicBtn from 'components/music-btn/music-btn'
 import { defaultBG } from '@/config'
 import { mapGetters, mapMutations } from 'vuex'
 import MmProgress from 'base/mm-progress/mm-progress.vue'
 import Lyric from 'components/lyric/lyric'
+import { silencePromise, format, parseLyric } from '@/utils/util'
 
 export default {
   name: 'Music',
   components: { MusicBtn, MmProgress, Lyric },
+  filters: {
+    // 時間格式化
+    format
+  },
   data() {
     return {
       lyricVisible: false, // 移动端歌词显示
       currentTime: 0, // 当前播放音乐时间
-      musicReady: false // 是否可以使用播放器
+      musicReady: false, // 是否可以使用播放器
+      lyric: [], // 歌词初始值
+      lyricIndex: 0 // 当前播放歌词下标
     }
   },
   computed: {
@@ -94,19 +102,67 @@ export default {
           : `url(${defaultBG})`
       return a
     },
-    ...mapGetters(['currentMusic', 'playing'])
+    ...mapGetters(['currentMusic', 'playing', 'audioEle', 'playlist'])
   },
   watch: {
     // 监听函数用法
+
+    // 监听当前播放的歌曲状态改变
+    currentMusic(newMusic, oldMusic) {
+      if (!newMusic.id) {
+        // 歌词置空
+        this.lyric = []
+        return null
+      }
+      if (newMusic.id === oldMusic.id) {
+        return null
+      }
+      this.audioEle.src = newMusic.url
+      // 播放歌曲改变，重置相关参数
+      this.lyricIndex = this.currentTime = this.currentProgress = 0
+      silencePromise(this.audioEle.play())
+      this.$nextTick(() => {
+        this._getLyric(newMusic.id)
+      })
+    },
+    // 监听当前播放状态
     playing(newPlaying) {
+      console.log('1111-11')
       const audio = this.audioEle
       this.$nextTick(() => {
         // 监听收到新值的true/false
         newPlaying ? silencePromise(audio.play()) : audio.pause()
+        this.musicReady = true
       })
+    },
+    // 监听播放歌曲的时长数据
+    currentTime(newTime) {
+      if (this.nolyric) {
+        return null
+      }
+      let lyricIndex = 0 // 确定歌词到那一句了，也即歌词的下标
+      for (let i = 0; i < this.lyric.length; i++) {
+        // 依据改变的歌词找该显示的歌词的时长位置
+        if (newTime > this.lyric[i].time) {
+          lyricIndex = i
+        }
+      }
+      this.lyricIndex = lyricIndex
     }
   },
   methods: {
+    // 获取歌词
+    _getLyric(id) {
+      getLyric(id).then((res) => {
+        if (res.nolyric) {
+          this.nolyric = true
+        } else {
+          this.nolyric = false
+          this.lyric = parseLyric(res.lrc.lyric)
+        }
+        silencePromise(this.audioEle.play())
+      })
+    },
     // 关闭歌词
     handleCloseLyric() {
       this.lyricVisible = false
@@ -117,10 +173,11 @@ export default {
     },
     // 播放上一曲
     prev() {
-      console.log('播放上一曲')
       if (!this.musicReady) {
         return null
       }
+      console.log('播放上一曲')
+
       if (this.playlist.length === 1) {
         // 只有一首歌就循环
         this.loop()

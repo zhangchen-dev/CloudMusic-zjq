@@ -43,7 +43,6 @@ export default {
     },
     // 播放暂停键
     selectItem(item, index) {
-      console.log(item)
       if (item.id !== this.currentMusic.id) {
         this.setCurrentIndex(index)
         this.setPlaying(true)

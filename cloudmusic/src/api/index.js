@@ -21,9 +21,9 @@ export function getPlaylistDetail(id) {
       })
       .then(({ playlist }) => playlist || {})
       .then(playlist => {
-        console.log(playlist);
+        // console.log(playlist);
         const { trackIds, tracks } = playlist // 这一步用法的具体含义？？？已解决！
-        console.log(tracks);
+        // console.log(tracks);
         if (!Array.isArray(trackIds)) {
           reject(new Error('获取歌单详情失败'))
         }
@@ -34,5 +34,15 @@ export function getPlaylistDetail(id) {
           resolve(playlist)
         }
       })
+  })
+}
+
+// 获取歌词
+export function getLyric(id) {
+  const url = '/lyric'
+  return axios.get(url, {
+    params: {
+      id
+    }
   })
 }

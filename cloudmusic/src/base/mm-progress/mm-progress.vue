@@ -25,7 +25,31 @@ export default {
       }
     }
   },
+  watch: {},
+  mounted() {
+    this.$nextTick(() => {
+      this.bindEvents()
+    })
+  },
   methods: {
+    // 添加绑定事件
+    bindEvents() {
+      // 鼠标移动
+      document.addEventListener('mousemove', this.barMove)
+      document.addEventListener('mouseup', this.barUp)
+      // 触摸事件
+      document.addEventListener('touchmove', this.barMove)
+      document.addEventListener('touchend', this.barUp)
+    },
+    // 移除绑定事件
+    unbindEvents() {
+      // 鼠标移动
+      document.removeEventListener('mousemove', this.barMove)
+      document.removeEventListener('mouseup', this.barUp)
+      // 触摸事件
+      document.removeEventListener('touchmove', this.barMove)
+      document.removeEventListener('touchend', this.barUp)
+    },
     // 进度条点击事件
     barclick(e) {
       let rect = this.$refs.mmProgress.getBoundingClientRect() // 这个方法作用是获取元素的位置
@@ -40,8 +64,23 @@ export default {
     // 鼠标按下事件
     barDown(e) {
       this.move.status = true
-      this.move.startX = e.clientX || e.touches[0].pageX
+      this.move.startX = e.clientX || e.touches[0].pageX // 获取触摸点击源点
       this.move.left = this.$refs.mmProgressInner.clientWidth
+    },
+    // 鼠标/触摸移动事件
+    barMove(e) {
+      if (!this.move.status) {
+        return false
+      }
+      e.preventDefault()
+      let endX = e.clientX || e.touches[0].pageX
+      let dist = endX - this.move.startX
+      let offsetWidth = Math.min(
+        this.$refs.mmProgress.clientWidth - dotWidth,
+        Math.max(0, this.move.left + dist)
+      )
+      this.moveSlide(offsetWidth)
+      this.commitPercent()
     },
     // 移动滑块
     moveSlide(offsetWidth) {
@@ -53,9 +92,58 @@ export default {
       const lineWidth = mmProgress.clientWidth - dotWidth
       const percent = mmProgressInner.clientWidth / lineWidth
       this.$emit(isEnd ? 'percentChangeEnd' : 'percentChange', percent)
+    },
+    // 鼠标/触摸释放事件
+    barUp(e) {
+      if (this.move.status) {
+        this.commitPercent(true)
+        this.move.status = false
+      }
     }
   }
 }
 </script>
-<style>
+<style lang="less">
+.mmProgress {
+  position: relative;
+  padding: 5px;
+  user-select: none;
+  cursor: pointer;
+  overflow: hidden;
+  .mmProgress-bar {
+    height: 2px;
+    width: 100%;
+    background: @bar_color;
+  }
+  .mmProgress-outer {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    display: inline-block;
+    width: 0;
+    height: 2px;
+    margin-top: -1px;
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .mmProgress-inner {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    display: inline-block;
+    width: 0;
+    height: 2px;
+    margin-top: -1px;
+    background: @line_color;
+    .mmProgress-dot {
+      position: absolute;
+      top: 50%;
+      right: -5px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: @dot_color;
+      transform: translateY(-50%);
+    }
+  }
+}
 </style>

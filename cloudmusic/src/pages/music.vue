@@ -58,9 +58,16 @@
         <div class="music-bar-time" v-if="currentMusic.id">
           {{ currentTime | format }}/{{ currentMusic.duration % 3600 | format }}
         </div>
+        <!-- 进度条调节功能 -->
+        <mm-progress
+          class="music-progress"
+          :percent="percentMusic"
+          :percent-progress="currentProgress"
+          @percentChange="progressMusic"
+          @percentChangeEnd="progressMusicEnd"
+        />
       </div>
-      <!-- 进度条调节功能 -->
-      <mm-progress />
+
       <!-- 播放模式 -->
     </div>
     <!-- 遮罩 -->
@@ -90,7 +97,8 @@ export default {
       currentTime: 0, // 当前播放音乐时间
       musicReady: false, // 是否可以使用播放器
       lyric: [], // 歌词初始值
-      lyricIndex: 0 // 当前播放歌词下标
+      lyricIndex: 0, // 当前播放歌词下标
+      currentProgress: 0 // 当前缓冲进度
     }
   },
   computed: {
@@ -101,6 +109,10 @@ export default {
           ? `url(${this.currentMusic.image}?param=300y300)`
           : `url(${defaultBG})`
       return a
+    },
+    percentMusic() {
+      const duration = this.currentMusic.duration
+      return this.currentTime && duration ? this.currentTime / duration : 0
     },
     ...mapGetters(['currentMusic', 'playing', 'audioEle', 'playlist'])
   },
@@ -210,7 +222,14 @@ export default {
     loop() {
       console.log('循环播放模式')
     },
-
+    // 修改音乐显示时长
+    progressMusic(percent) {
+      this.currentTime = this.currentMusic.duration * percent
+    },
+    // 修改音乐进度
+    progressMusicEnd(percent) {
+      this.audioEle.currentTime = this.currentMusic.duration * percent
+    },
     // 提交状态的一些方法
     ...mapMutations({
       setPlaying: 'SET_PLAYING',

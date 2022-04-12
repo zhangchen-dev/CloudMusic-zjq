@@ -56,7 +56,8 @@
           <template v-else>欢迎使用zjqMusicCloud在线音乐播放器</template>
         </div>
         <div class="music-bar-time" v-if="currentMusic.id">
-          {{ currentTime | format }}/{{ currentMusic.duration % 3600 | format }}
+          {{ currentTime | format }} /
+          {{ currentMusic.duration % 3600 | format }}
         </div>
         <!-- 进度条调节功能 -->
         <mm-progress
@@ -76,6 +77,7 @@
   </div>
 </template>
 <script>
+import mmPlayerMusic from './mmPlayer'
 import { getLyric } from 'api'
 import MusicBtn from 'components/music-btn/music-btn'
 import { defaultBG } from '@/config'
@@ -161,6 +163,12 @@ export default {
       }
       this.lyricIndex = lyricIndex
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      mmPlayerMusic.initAudio(this) // 加載多媒體事件，此处选定就是多媒体播放标签
+      // this.initKeyDown()
+    })
   },
   methods: {
     // 获取歌词

@@ -16,6 +16,18 @@
 const dotWidth = 10
 export default {
   name: 'MmProgress',
+  props: {
+    // 进度值一
+    percent: {
+      type: [Number],
+      default: 0
+    },
+    // 进度值二 （歌曲缓冲进度条）
+    percentProgress: {
+      type: [Number],
+      default: 0
+    }
+  },
   data() {
     return {
       move: {
@@ -25,12 +37,30 @@ export default {
       }
     }
   },
-  watch: {},
+  watch: {
+    // 监听来自父组件的双向绑定的进度条发生的变化
+    percent(newPercent) {
+      if (newPercent >= 0 && !this.move.status) {
+        const barWidth = this.$refs.mmProgress.clientWidth - dotWidth
+        const offsetWidth = newPercent * barWidth
+        this.moveSlide(offsetWidth)
+      }
+    },
+    percentProgress(newValue) {
+      let offsetWidth = this.$refs.mmProgress.clientWidth * newValue
+      this.$refs.mmPercentProgress.style.width = `${offsetWidth}px`
+    }
+  },
   mounted() {
     this.$nextTick(() => {
       this.bindEvents() // 添加绑定事件
-      const barWidth = this
+      const barWidth = this.$refs.mmProgress.clientWidth - dotWidth
+      const offsetWidth = this.percent * barWidth
+      this.moveSlide(offsetWidth)
     })
+  },
+  beforeDestroy() {
+    this.unbindEvents()
   },
   methods: {
     // 添加绑定事件

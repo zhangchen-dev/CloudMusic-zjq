@@ -167,10 +167,23 @@ export default {
   mounted() {
     this.$nextTick(() => {
       mmPlayerMusic.initAudio(this) // 加載多媒體事件，此处选定就是多媒体播放标签
-      // this.initKeyDown()
+      this.initKeyDown()
     })
   },
   methods: {
+    // 按键事件
+    initKeyDown() {
+      document.onkeydown = (e) => {
+        switch (e.ctrlKey && e.keyCode) {
+          case 32: // 播放暂停Ctrl + Space
+            this.play()
+            break
+          case 37: // 上一曲Ctrl+Left
+            this.prev()
+            break
+        }
+      }
+    },
     // 获取歌词
     _getLyric(id) {
       getLyric(id).then((res) => {

@@ -4,6 +4,8 @@ export const audioEle = state => state.audioEle
 export const playlist = state => state.playlist
 // 播放状态
 export const playing = state => state.playing
+// 当前音乐索引
+export const currentIndex = state => state.currentIndex
 // 当前音乐
 export const currentMusic = state => {
   return state.playlist[state.currentIndex] || {}

@@ -116,7 +116,13 @@ export default {
       const duration = this.currentMusic.duration
       return this.currentTime && duration ? this.currentTime / duration : 0
     },
-    ...mapGetters(['currentMusic', 'playing', 'audioEle', 'playlist'])
+    ...mapGetters([
+      'currentMusic',
+      'playing',
+      'audioEle',
+      'playlist',
+      'currentIndex'
+    ])
   },
   watch: {
     // 监听函数用法
@@ -209,13 +215,13 @@ export default {
       if (!this.musicReady) {
         return null
       }
-      console.log('播放上一曲')
-
+      console.log('播放上一曲', this.currentIndex)
       if (this.playlist.length === 1) {
         // 只有一首歌就循环
         this.loop()
       } else {
         let index = this.currentIndex - 1
+        console.log(index)
         if (index < 0) {
           index = this.playlist.length - 1
         }
@@ -228,15 +234,45 @@ export default {
     },
     // 播放/暂停按钮
     play() {
-      if (this.playing) {
-        console.log('暂停')
-      } else {
-        console.log('播放')
+      if (!this.musicReady) {
+        return null
       }
+      this.setPlaying(!this.playing)
     },
     // 播放下一曲
-    next() {
-      console.log('播放下一曲')
+    next(flag = false) {
+      if (!this.musicReady) {
+        return
+      }
+      const {
+        playlist: { length }
+      } = this
+      if (
+        // 此处的意义：当前播放歌曲为列表中的最后一首歌曲，点击下一曲出现的操作
+        // 此处执行的条件是还有一个播放模式为顺序播放模式
+        // (length -1 === this.currentIndex && this.mode === playMode.order) ||
+        length - 1 === this.currentIndex ||
+        (length === 1 && flag)
+      ) {
+        this.setCurrentIndex(-1)
+        this.setPlaying(false)
+        return null
+      }
+      if (length === 1) {
+        this.loop()
+      } else {
+        let index = this.currentIndex + 1
+        if (index === length) {
+          index = 0
+        }
+        // console.log(this.playing, this.musicReady, this)
+        // 这里添加播放状态取反的值意义何在，不添加在点击播放下一曲是也会可以实现功能？？？？？？
+        if (!this.playing && this.musicReady) {
+          this.setPlaying(true)
+        }
+        this.setCurrentIndex(index)
+        this.musicReady = false
+      }
     },
 
     // 播放模式

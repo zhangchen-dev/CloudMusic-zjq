@@ -49,6 +49,13 @@ const routes = [
         meta: {
           title: '我听过的'
         }
+      },
+      {
+        path: '/music/comment/:id', // 音乐评论
+        component: () => import('pages/comment/comment'),
+        meta: {
+          title: '评论详情'
+        }
       }
     ]
   }

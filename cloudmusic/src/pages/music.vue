@@ -77,6 +77,13 @@
         :size="30"
         @click="modeChange"
       />
+      <!-- 评论 -->
+      <mm-icon
+        class="icon-color pointer comment"
+        type="comment"
+        :size="30"
+        @click="openComment"
+      />
     </div>
     <!-- 遮罩 -->
     <div class="mmPlayer-bg" :style="{ backgroundImage: picUrl }"></div>
@@ -144,6 +151,7 @@ export default {
 
     // 监听当前播放的歌曲状态改变
     currentMusic(newMusic, oldMusic) {
+      console.log('监测下一曲中', newMusic, oldMusic)
       if (!newMusic.id) {
         // 歌词置空
         this.lyric = []
@@ -162,7 +170,6 @@ export default {
     },
     // 监听当前播放状态
     playing(newPlaying) {
-      console.log('1111-11')
       const audio = this.audioEle
       this.$nextTick(() => {
         // 监听收到新值的true/false
@@ -265,8 +272,8 @@ export default {
       if (
         // 此处的意义：当前播放歌曲为列表中的最后一首歌曲，点击下一曲出现的操作
         // 此处执行的条件是还有一个播放模式为顺序播放模式
-        // (length -1 === this.currentIndex && this.mode === playMode.order) ||
-        length - 1 === this.currentIndex ||
+        (length - 1 === this.currentIndex && this.mode === playMode.order) ||
+        // length - 1 === this.currentIndex ||
         (length === 1 && flag)
       ) {
         this.setCurrentIndex(-1)
@@ -292,7 +299,13 @@ export default {
 
     // 播放模式
     loop() {
-      console.log('循环播放模式')
+      console.log('循环播放模式--------')
+      this.audioEle.currentTime = 0
+      silencePromise(this.audioEle.play())
+      this.setPlaying(true)
+      if (this.lyric.length > 0) {
+        this.lyricIndex = 0
+      }
     },
     // 修改音乐显示时长
     progressMusic(percent) {
@@ -326,11 +339,12 @@ export default {
       console.log('修改播放模式中。。。')
       const mode = (this.mode + 1) % 4
       this.setPlayMode(mode)
-      // console.log(this.orderList, '----------1----------')
+      let list = []
       if (mode === playMode.loop) {
+        console.log('11111111111')
         return null
       }
-      let list = []
+      // console.log(mode)
       switch (mode) {
         // 依据播放模式修改播放列表
         case playMode.listLoop:
@@ -343,6 +357,7 @@ export default {
       }
       this.resetCurrentIndex(list) // 此处修改播放列表
       this.setPlaylist(list)
+      console.log(this.mode, list)
     },
     // 修改当前播放索引，注意乱序的知识修改播放的随机值，播放列表顺序不发生改变
     resetCurrentIndex(list) {
@@ -350,6 +365,15 @@ export default {
         return item.id === this.currentMusic.id
       })
       this.setCurrentIndex(index)
+    },
+    // 打开音乐评论
+    openComment() {
+      if (!this.currentMusic.id) {
+        console.log('还没有播放歌曲哦')
+        return false
+      }
+      // 跳到评论页面
+      this.$router.push(`/music/comment/${this.currentMusic.id}`)
     },
     // 提交状态的一些方法
     ...mapMutations({

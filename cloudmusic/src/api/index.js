@@ -1,5 +1,6 @@
 import axios from '@/utils/axios'
 import { formatTopSongs } from '@/utils/song'
+import { defaultLimit } from '@/config'
 
 axios.defaults.baseURL = process.env.VUE_APP_BASE_API_URL
 
@@ -45,4 +46,18 @@ export function getLyric(id) {
       id
     }
   })
+}
+
+// 获取音乐评论
+export function getComment(id, page, limit = defaultLimit) {
+  console.log('请求评论数据中');
+  let a = axios.get('/comment/music', {
+    params: {
+      offset: page * limit,
+      limit: limit,
+      id
+    }
+  })
+  console.log(a);
+  return a
 }

@@ -24,6 +24,10 @@ const mutations = {
   // 修改顺序列表
   [types.SET_ORDERLIST](state, orderList) {
     state.orderList = orderList
+  },
+  // 修改播放模式
+  [types.SET_PLAYMODE](state, mode) {
+    state.mode = mode
   }
 }
 export default mutations

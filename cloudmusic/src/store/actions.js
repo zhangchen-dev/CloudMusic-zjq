@@ -1,4 +1,4 @@
-import { setUserId } from '@/utils/storage'
+import { setUserId, setMode } from '@/utils/storage'
 import * as types from './mutations-types'
 
 // 设置网易云用户UID
@@ -10,6 +10,7 @@ export const setUid = function ({ commit }, uid) {
 // 提交方式的对象提交方式，注意此处歌单的加载是由异步请求得到的，所以此处的状态管理就是使用异步方式进行管理
 export const setPlaylist = function ({ commit }, { list }) {
   commit(types.SET_PLAYLIST, list)
+  commit(types.SET_ORDERLIST, list)
 }
 
 // 删除正在播放列表中的歌曲
@@ -26,4 +27,7 @@ export const removerPlayListItem = function ({ commit, state }, { list, index })
   } else {
     commit(types.SET_PLAYING, true)
   }
+}
+export const setPlayMode = function ({ commit }, mode) {
+  commit(types.SET_PLAYMODE, setMode(mode))
 }

@@ -88,10 +88,15 @@ import mmPlayerMusic from './mmPlayer'
 import { getLyric } from 'api'
 import MusicBtn from 'components/music-btn/music-btn'
 import { defaultBG, playMode } from '@/config'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import MmProgress from 'base/mm-progress/mm-progress.vue'
 import Lyric from 'components/lyric/lyric'
-import { silencePromise, format, parseLyric } from '@/utils/util'
+import {
+  silencePromise,
+  format,
+  parseLyric,
+  randomSortArray
+} from '@/utils/util'
 import MmIcon from 'base/mm-icon/mm-icon.vue'
 
 export default {
@@ -130,7 +135,8 @@ export default {
       'audioEle',
       'playlist',
       'currentIndex',
-      'mode'
+      'mode',
+      'orderList'
     ])
   },
   watch: {
@@ -298,7 +304,6 @@ export default {
     },
     // 获取播放模式的icon
     getModeIconType() {
-      console.log('播放模式icon')
       return {
         [playMode.listLoop]: 'loop',
         [playMode.order]: 'sequence',
@@ -308,7 +313,6 @@ export default {
     },
     // 获取播放模式title
     getModeIconTitle() {
-      console.log('播放模式的title')
       const key = 'Ctrl + O'
       return {
         [playMode.listLoop]: `列表循环${key}`,
@@ -320,13 +324,41 @@ export default {
     // 修改播放模式
     modeChange() {
       console.log('修改播放模式中。。。')
+      const mode = (this.mode + 1) % 4
+      this.setPlayMode(mode)
+      // console.log(this.orderList, '----------1----------')
+      if (mode === playMode.loop) {
+        return null
+      }
+      let list = []
+      switch (mode) {
+        // 依据播放模式修改播放列表
+        case playMode.listLoop:
+        case playMode.order:
+          list = this.orderList
+          break
+        case playMode.random:
+          list = randomSortArray(this.orderList)
+          break
+      }
+      this.resetCurrentIndex(list) // 此处修改播放列表
+      this.setPlaylist(list)
+    },
+    // 修改当前播放索引，注意乱序的知识修改播放的随机值，播放列表顺序不发生改变
+    resetCurrentIndex(list) {
+      const index = list.findIndex((item) => {
+        return item.id === this.currentMusic.id
+      })
+      this.setCurrentIndex(index)
     },
     // 提交状态的一些方法
     ...mapMutations({
       setPlaying: 'SET_PLAYING',
       setPlaylist: 'SET_PLAYLIST',
       setCurrentIndex: 'SET_CURRENTINDEX'
-    })
+    }),
+    // 异步的一些提交方法
+    ...mapActions(['setPlayMode'])
   }
 }
 </script>

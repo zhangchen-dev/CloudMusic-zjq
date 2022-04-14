@@ -70,6 +70,13 @@
       </div>
 
       <!-- 播放模式 -->
+      <mm-icon
+        class="icon-color pointer mode"
+        :type="getModeIconType()"
+        :title="getModeIconTitle()"
+        :size="30"
+        @click="modeChange"
+      />
     </div>
     <!-- 遮罩 -->
     <div class="mmPlayer-bg" :style="{ backgroundImage: picUrl }"></div>
@@ -80,15 +87,16 @@
 import mmPlayerMusic from './mmPlayer'
 import { getLyric } from 'api'
 import MusicBtn from 'components/music-btn/music-btn'
-import { defaultBG } from '@/config'
+import { defaultBG, playMode } from '@/config'
 import { mapGetters, mapMutations } from 'vuex'
 import MmProgress from 'base/mm-progress/mm-progress.vue'
 import Lyric from 'components/lyric/lyric'
 import { silencePromise, format, parseLyric } from '@/utils/util'
+import MmIcon from 'base/mm-icon/mm-icon.vue'
 
 export default {
   name: 'Music',
-  components: { MusicBtn, MmProgress, Lyric },
+  components: { MusicBtn, MmProgress, Lyric, MmIcon },
   filters: {
     // 時間格式化
     format
@@ -121,7 +129,8 @@ export default {
       'playing',
       'audioEle',
       'playlist',
-      'currentIndex'
+      'currentIndex',
+      'mode'
     ])
   },
   watch: {
@@ -286,6 +295,31 @@ export default {
     // 修改音乐进度
     progressMusicEnd(percent) {
       this.audioEle.currentTime = this.currentMusic.duration * percent
+    },
+    // 获取播放模式的icon
+    getModeIconType() {
+      console.log('播放模式icon')
+      return {
+        [playMode.listLoop]: 'loop',
+        [playMode.order]: 'sequence',
+        [playMode.random]: 'random',
+        [playMode.loop]: 'loop-one'
+      }[this.mode]
+    },
+    // 获取播放模式title
+    getModeIconTitle() {
+      console.log('播放模式的title')
+      const key = 'Ctrl + O'
+      return {
+        [playMode.listLoop]: `列表循环${key}`,
+        [playMode.order]: `顺序播放${key}`,
+        [playMode.random]: `随机播放${key}`,
+        [playMode.loop]: `单曲循环${key}`
+      }[this.mode]
+    },
+    // 修改播放模式
+    modeChange() {
+      console.log('修改播放模式中。。。')
     },
     // 提交状态的一些方法
     ...mapMutations({

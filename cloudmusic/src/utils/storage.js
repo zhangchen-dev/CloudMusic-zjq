@@ -19,3 +19,15 @@ export function setUserId(uid) {
   storage.set(USERID_KEY, uid)
   return uid
 }
+
+// 播放模式
+const MODE_KEY = '__mmPlayer_mode__'
+// 获取播放模式
+export function getMode() {
+  return storage.get(MODE_KEY, null)
+}
+// 播放模式
+export function setMode(mode) {
+  storage.set(MODE_KEY, mode)
+  return mode
+}

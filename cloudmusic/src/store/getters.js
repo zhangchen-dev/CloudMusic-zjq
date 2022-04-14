@@ -1,5 +1,7 @@
 // audio元素
 export const audioEle = state => state.audioEle
+// 播放模式
+export const mode = state => state.mode
 // 播放列表
 export const playlist = state => state.playlist
 // 播放状态
